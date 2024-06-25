@@ -74,8 +74,6 @@
             irrelevant-files: *gate-irrelevant-files
         - grenade:
             irrelevant-files: *gate-irrelevant-files
-        - grenade-skip-level:
-            irrelevant-files: *gate-irrelevant-files
         - tempest-ipv6-only:
             irrelevant-files: *gate-irrelevant-files
         - openstacksdk-functional-devstack:
@@ -174,6 +172,7 @@
           $TEMPEST_CONFIG:
             volume-feature-enabled:
               volume_revert: True
+              volume_image_dep_tests: False
 
 - job:
     name: cinder-plugin-ceph-tempest-mn-aa
@@ -196,6 +195,10 @@
           $CINDER_CONF:
             DEFAULT:
               cluster: ceph
+        test-config:
+          $TEMPEST_CONFIG:
+            volume-feature-enabled:
+              volume_image_dep_tests: False
 
 - job:
     name: tempest-integrated-storage-ubuntu-focal

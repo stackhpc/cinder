@@ -868,6 +868,12 @@ class PowerFlexDriver(driver.VolumeDriver):
         connection_properties["scaleIO_volume_id"] = vol_or_snap.provider_id
         connection_properties["config_group"] = self.configuration.config_group
         connection_properties["failed_over"] = self._is_failed_over
+        connection_properties["verify_certificate"] = (
+            self._get_client().verify_certificate
+        )
+        connection_properties["certificate_path"] = (
+            self._get_client().certificate_path
+        )
 
         if vol_size is not None:
             extra_specs = self._get_volumetype_extraspecs(vol_or_snap)
@@ -1236,7 +1242,8 @@ class PowerFlexDriver(driver.VolumeDriver):
 
         self.connector.disconnect_volume(connection_properties, volume)
 
-    def copy_image_to_volume(self, context, volume, image_service, image_id):
+    def copy_image_to_volume(self, context, volume, image_service, image_id,
+                             disable_sparse=False):
         """Fetch image from image service and write it to volume."""
 
         LOG.info("Copy image %(image_id)s from image service %(service)s "
@@ -1252,7 +1259,8 @@ class PowerFlexDriver(driver.VolumeDriver):
                                      image_id,
                                      self._sio_attach_volume(volume),
                                      BLOCK_SIZE,
-                                     size=volume.size)
+                                     size=volume.size,
+                                     disable_sparse=disable_sparse)
         finally:
             self._sio_detach_volume(volume)
 
