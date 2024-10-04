@@ -1,0 +1,7 @@
+---
+fixes:
+  - |
+    NetApp ONTAP driver `bug #2083706
+    <https://bugs.launchpad.net/cinder/+bug/2083706>`_: Fixed driver
+    initialisation error when using ``netapp_ssl_cert_path`` with new REST
+    client.
