@@ -45,6 +45,7 @@ class Client(object):
         self.connection = netapp_api.NaServer(
             host=host,
             transport_type=kwargs['transport_type'],
+            ssl_cert_path=kwargs.get('ssl_cert_path'),
             port=kwargs['port'],
             username=username,
             password=password,

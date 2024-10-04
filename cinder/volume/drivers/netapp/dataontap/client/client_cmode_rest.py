@@ -76,7 +76,7 @@ class RestClient(object):
         self.connection = netapp_api.RestNaServer(
             host=host,
             transport_type=kwargs['transport_type'],
-            ssl_cert_path=kwargs.pop('ssl_cert_path'),
+            ssl_cert_path=kwargs['ssl_cert_path'],
             port=kwargs['port'],
             username=username,
             password=password,
