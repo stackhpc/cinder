@@ -18,6 +18,7 @@ Performance metrics functions and cache for NetApp cDOT systems.
 
 from oslo_log import log as logging
 
+from cinder import exception
 from cinder.volume.drivers.netapp.dataontap.client import api as netapp_api
 from cinder.volume.drivers.netapp.dataontap.performance import perf_base
 
@@ -49,7 +50,7 @@ class PerformanceCmodeLibrary(perf_base.PerformanceLibrary):
                 self.avg_processor_busy_base_counter_name = (
                     self._get_base_counter_name('system',
                                                 'avg_processor_busy'))
-        except netapp_api.NaApiError:
+        except exception.NotFound:
             if self.zapi_client.features.SYSTEM_CONSTITUENT_METRICS:
                 self.avg_processor_busy_base_counter_name = 'cpu_elapsed_time'
             else:
