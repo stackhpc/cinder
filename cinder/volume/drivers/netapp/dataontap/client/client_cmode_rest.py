@@ -431,7 +431,7 @@ class RestClient(object):
             query['fields'] = fields
 
         volumes_response = self.send_request(
-            '/storage/volumes/', 'get', query=query)
+            '/storage/volumes/', 'get', query=query, enable_tunneling=False)
 
         records = volumes_response.get('records', [])
         volume = self._get_unique_volume(records)
@@ -830,7 +830,7 @@ class RestClient(object):
         }
 
         response = self.send_request(
-            '/network/ip/interfaces/', 'get', query=query)
+            '/network/ip/interfaces/', 'get', query=query, enable_tunneling=False)
 
         return [lif_info['ip']['address']
                 for lif_info in response['records']]
