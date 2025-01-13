@@ -1,0 +1,10 @@
+---
+features:
+  - |
+    VAST Data driver: new Cinder driver for VAST Data's NVMe/TCP platform.
+    The VAST Data Platform is a high-performance, scalable, and redundant
+    storage solution designed for modern data center and cloud workloads.
+    Its architecture unifies storage, database, and containerized compute,
+    enabling AI, deep learning, and other demanding applications
+    to leverage disaggregated shared-everything (DASE)
+    storage over NVMe/TCP with the performance of local NVMe flash.
