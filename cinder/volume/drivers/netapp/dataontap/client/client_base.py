@@ -42,10 +42,12 @@ class Client(object):
         username = kwargs['username']
         password = kwargs['password']
         api_trace_pattern = kwargs['api_trace_pattern']
+        ssl_cert_path = kwargs.get('ssl_cert_path')
         self.connection = netapp_api.NaServer(
             host=host,
             transport_type=kwargs['transport_type'],
             port=kwargs['port'],
+            ssl_cert_path=ssl_cert_path,
             username=username,
             password=password,
             api_trace_pattern=api_trace_pattern)
