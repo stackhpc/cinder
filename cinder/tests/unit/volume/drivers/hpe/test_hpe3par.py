@@ -698,7 +698,9 @@ class HPE3PARBaseDriver(test.TestCase):
         mock.call.login(HPE3PAR_USER_NAME, HPE3PAR_USER_PASS)]
 
     get_id_login = [
+        mock.call.login(HPE3PAR_USER_NAME, HPE3PAR_USER_PASS),
         mock.call.getWsApiVersion(),
+        mock.call.logout(),
         mock.call.login(HPE3PAR_USER_NAME, HPE3PAR_USER_PASS),
         mock.call.getStorageSystemInfo()]
 
@@ -8928,6 +8930,7 @@ class TestHPE3PARISCSIDriver(HPE3PARBaseDriver):
         expected_get_ports = [mock.call.getPorts()]
         expected_primera = [
             mock.call.is_primera_array(),
+            mock.call.login(HPE3PAR_USER_NAME, HPE3PAR_USER_PASS),
             mock.call.getWsApiVersion()]
         mock_client.assert_has_calls(
             self.standard_login +
@@ -9277,7 +9280,14 @@ class TestHPE3PARISCSIDriver(HPE3PARBaseDriver):
 
             self.assertDictEqual(self.multipath_properties, result)
 
-    def test_initialize_connection_multipath_vlan_ip(self):
+    # iscsi_ip is 1.1.1.2
+    # two cases:
+    # (i) vlan_ip is different from iscsi_ip
+    # (ii) vlan_ip is same as iscsi_ip
+    @ddt.data({'vlan_ip': '192.168.100.1'},
+              {'vlan_ip': '1.1.1.2'})
+    @ddt.unpack
+    def test_initialize_connection_multipath_vlan_ip(self, vlan_ip):
         # setup_mock_client drive with default configuration
         # and return the mock HTTP 3PAR client
         mock_client = self.setup_driver()
@@ -9309,7 +9319,7 @@ class TestHPE3PARISCSIDriver(HPE3PARBaseDriver):
         mock_client.getiSCSIPorts.return_value = [{
             'IPAddr': '1.1.1.2',
             'iSCSIName': self.TARGET_IQN,
-            'iSCSIVlans': [{'IPAddr': '192.168.100.1',
+            'iSCSIVlans': [{'IPAddr': vlan_ip,
                             'iSCSIName': self.TARGET_IQN}]
         }]
 
