@@ -2862,6 +2862,32 @@ def volume_get_all_by_group(context, group_id, filters=None):
     return query.all()
 
 
+@require_admin_context
+@main_context_manager.writer
+def volume_update_all_by_service(context):
+    """Ensure volumes have the correct service_uuid value for their host.
+
+    In some deployment tools, when performing an upgrade, all service records
+    are recreated including c-vol service which gets a new record in the
+    services table, though its host name is constant. Later we then delete the
+    old service record.
+    As a consequence, the volumes have the right host name but the service
+    UUID needs to be updated to the ID of the new service record.
+
+    :param context: context to query under
+    """
+    # Get all cinder-volume services
+    services = service_get_all(context, binary='cinder-volume')
+    for service in services:
+        query = model_query(context, models.Volume)
+        query = query.filter(
+            _filter_host(
+                models.Volume.host, service.host),
+            models.Volume.service_uuid != service.uuid)
+        query.update(
+            {"service_uuid": service.uuid}, synchronize_session=False)
+
+
 @require_context
 @main_context_manager.reader
 def volume_get_all_by_generic_group(context, group_id, filters=None):
@@ -8678,9 +8704,8 @@ def use_quota_online_data_migration(
     calculate_use_quota,
 ):
     updated = 0
-    query = model_query(context, getattr(models, resource_name)).filter_by(
-        use_quota=None
-    )
+    query = model_query(context, getattr(models, resource_name),
+                        read_deleted='yes').filter_by(use_quota=None)
     if resource_name == 'Volume':
         query = query.options(joinedload(models.Volume.volume_admin_metadata))
     total = query.count()
