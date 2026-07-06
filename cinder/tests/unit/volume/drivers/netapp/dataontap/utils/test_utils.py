@@ -98,7 +98,8 @@ class NetAppCDOTDataMotionTestCase(test.TestCase):
             self.mock_cmode_client.assert_called_once_with(
                 hostname='fake_hostname', password='fake_password',
                 username='fake_user', transport_type='https', port=8866,
-                trace=mock.ANY, vserver=None, api_trace_pattern="fake_regex")
+                trace=mock.ANY, vserver=None, api_trace_pattern="fake_regex",
+                ssl_cert_path='fake_ca')
             self.mock_cmode_rest_client.assert_not_called()
         else:
             self.mock_cmode_rest_client.assert_called_once_with(
@@ -124,7 +125,7 @@ class NetAppCDOTDataMotionTestCase(test.TestCase):
                 hostname='fake_hostname', password='fake_password',
                 username='fake_user', transport_type='https', port=8866,
                 trace=mock.ANY, vserver='fake_vserver',
-                api_trace_pattern="fake_regex")
+                api_trace_pattern="fake_regex", ssl_cert_path='fake_ca')
             self.mock_cmode_rest_client.assert_not_called()
         else:
             self.mock_cmode_rest_client.assert_called_once_with(
